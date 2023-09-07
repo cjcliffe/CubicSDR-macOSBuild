@@ -1,2 +1,2 @@
 # CubicSDR-macOSBuild
-macOS / OSX CubicSDR build scripts
+macOS CubicSDR build scripts

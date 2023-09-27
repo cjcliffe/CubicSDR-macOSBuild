@@ -20,6 +20,6 @@ if [ -d "$UPD_FOLDER" ]; then
     git pull
     popd
 else
-    git clone $UPD_REPO $UPD_FOLDER $UPD_BRANCH
+    git clone --depth 1 $UPD_REPO $UPD_FOLDER $UPD_BRANCH
 fi
 

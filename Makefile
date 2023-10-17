@@ -4,6 +4,13 @@ SOAPY_SDR_DIR := $(INSTALL_DIR)/share/cmake/SoapySDR
 SOAPY_ABI_VERSION := $(shell sed -n 's/^\#define SOAPY_SDR_ABI_VERSION "\([0-9\.-]*\)"/\1/p' $(INSTALL_DIR)/include/SoapySDR/Version.h)
 SOAPY_MOD_PATH := install_dir/lib/SoapySDR/modules$(SOAPY_ABI_VERSION)
 
+ifdef CUBICSDR_CERT
+	CUBICSDR_CODE_SIGN:=ON
+	CUBICSDR_CERT:=$(CUBICSDR_CERT)
+else
+	CUBICSDR_CODE_SIGN:=OFF
+endif
+
 all: CubicSDR
 
 clean:
@@ -18,7 +25,7 @@ install_dir:
 CubicSDR: build_stage install_dir liquid-dsp SoapySDR wxWidgets all_modules
 	scripts/update_repo.sh build_stage/CubicSDR https://github.com/cjcliffe/CubicSDR.git
 	mkdir -p build_stage/CubicSDR/build
-	cmake -S build_stage/CubicSDR -B build_stage/CubicSDR/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DLIQUID_INCLUDES=${INSTALL_DIR}/include -DLIQUID_LIBRARIES=${INSTALL_DIR}/lib/libliquid.dylib -DwxWidgets_CONFIG_EXECUTABLE=${INSTALL_DIR}/wxWidgets-staticlib/bin/wx-config -DSoapySDR_DIR=${INSTALL_DIR}/share/cmake/SoapySDR -DSOAPY_SDR_INCLUDE_DIR=${INSTALL_DIR}/include -DBUNDLE_APP=1 -DBUNDLE_SOAPY_MODS=1 -DCPACK_BINARY_DRAGNDROP=1 -DCMAKE_PREFIX_PATH=${INSTALL_DIR}
+	cmake -S build_stage/CubicSDR -B build_stage/CubicSDR/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DLIQUID_INCLUDES=${INSTALL_DIR}/include -DLIQUID_LIBRARIES=${INSTALL_DIR}/lib/libliquid.dylib -DwxWidgets_CONFIG_EXECUTABLE=${INSTALL_DIR}/wxWidgets-staticlib/bin/wx-config -DSoapySDR_DIR=${INSTALL_DIR}/share/cmake/SoapySDR -DSOAPY_SDR_INCLUDE_DIR=${INSTALL_DIR}/include -DBUNDLE_APP=1 -DBUNDLE_SOAPY_MODS=1 -DCPACK_BINARY_DRAGNDROP=1 -DCMAKE_PREFIX_PATH=${INSTALL_DIR} -DCUBICSDR_CODE_SIGN=${CUBICSDR_CODE_SIGN} -DCUBICSDR_CERT=${CUBICSDR_CERT}
 	# TODO: symlinked libs not being handled correctly with cpack; just move it manually for now
 	cp ${INSTALL_DIR}/lib/*.dylib build_stage/CubicSDR/build/x64/CubicSDR.app/Contents/MacOS/
 	cd build_stage/CubicSDR/build && make -j${NPROC} && cpack

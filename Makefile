@@ -59,8 +59,12 @@ install_dir/lib/libSoapySDR.dylib:
 
 all_modules: SoapyRTLSDR SoapyAudio SoapyRemote SoapyAirspy SoapyAirspyHF SoapyHackRF SoapyRedPitaya SoapyBladeRF LimeSuite SoapySDRPlay SoapyNetSDR SoapyRTLTCP
 
+librtlsdr: build_stage install_dir install_dir/lib/librtlsdr.dylib
+install_dir/lib/librtlsdr.dylib:
+	$(call BUILD_AND_INSTALL,rtlsdr,https://github.com/rtlsdrblog/rtl-sdr-blog.git,-DLIBUSB_INCLUDE_DIRS=/usr/local/include/libusb-1.0/ -DLIBUSB_LIBRARIES=/usr/local/lib/libusb-1.0.dylib)
+
 SoapyRTLSDR: SoapySDR $(SOAPY_MOD_PATH)/librtlsdrSupport.so
-$(SOAPY_MOD_PATH)/librtlsdrSupport.so:
+$(SOAPY_MOD_PATH)/librtlsdrSupport.so: librtlsdr
 	$(call BUILD_AND_INSTALL,SoapyRTLSDR,https://github.com/pothosware/SoapyRTLSDR.git)
 
 SoapyAudio: SoapySDR $(SOAPY_MOD_PATH)/libaudioSupport.so

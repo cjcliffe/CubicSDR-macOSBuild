@@ -57,7 +57,8 @@ SoapySDR: build_stage install_dir install_dir/lib/libSoapySDR.dylib
 install_dir/lib/libSoapySDR.dylib:
 	$(call BUILD_AND_INSTALL,SoapySDR,https://github.com/pothosware/SoapySDR.git)
 
-all_modules: SoapyRTLSDR SoapyAudio SoapyRemote SoapyAirspy SoapyAirspyHF SoapyHackRF SoapyRedPitaya SoapyBladeRF LimeSuite SoapySDRPlay SoapyNetSDR SoapyRTLTCP
+all_modules: SoapyRTLSDR SoapyAudio SoapyRemote SoapyAirspy SoapyAirspyHF SoapyHackRF SoapyRedPitaya SoapyBladeRF LimeSuite SoapyNetSDR SoapyRTLTCP SoapyPlutoSDR
+nodep_modules: SoapySDRPlay 
 
 librtlsdr: build_stage install_dir install_dir/lib/librtlsdr.dylib
 install_dir/lib/librtlsdr.dylib:
@@ -111,3 +112,10 @@ SoapyRTLTCP : SoapySDR $(SOAPY_MOD_PATH)/librtltcpSupport.so
 $(SOAPY_MOD_PATH)/librtltcpSupport.so:
 	$(call BUILD_AND_INSTALL,SoapyRTLTCP,https://github.com/pothosware/SoapyRTLTCP.git)
 
+SoapyPlutoSDR : SoapySDR libiio $(SOAPY_MOD_PATH)/libPlutoSDRSupport.so
+$(SOAPY_MOD_PATH)/libPlutoSDRSupport.so:
+	$(call BUILD_AND_INSTALL,SoapyPlutoSDR,https://github.com/pothosware/SoapyPlutoSDR.git)
+	
+libiio: build_stage install_dir install_dir/lib/libiio.dylib
+install_dir/lib/libiio.dylib:
+	$(call BUILD_AND_INSTALL,libiio,https://github.com/analogdevicesinc/libiio/ v0.25,-DOSX_FRAMEWORK=OFF)
